@@ -1,73 +1,149 @@
-# React + TypeScript + Vite
+# Openfeed
+- App  de posts simples
+# MVP
+Entrar com uma conta, e poder fazer postagens com tags especificas
+## Backend
+- Spring
+- Postgres (Supabase pode ser uma boa)
+- Autenticacao de usuario: Lookup simples no banco de dados;
+### Entidades
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Post  
+id_post: numerico (PK)  
+titulo: string  
+conteudo: string  
+data_postagem: date  
+tags: array de tags (pode ser um enum do banco de dados)  
+id_user: numero (FK)
 
-Currently, two official plugins are available:
+User  
+id_user: numerico (PK)  
+username: string  
+email: string  
+senha: string (criptografada no banco de dados)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Tags disponiveis:
+Videogames, Cinema, Esportes, Lazer, Comida, Viagens
 
-## React Compiler
+### Endpoints 
+Convencao de nomeacao: kebab-case  
+Endpoint base global: api/v1
+### Posts
+Endpoint base: posts/
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Criar um post
+```
+api/v1/posts/criar-postagem
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Retornar posts
 ```
+api/v1/posts/retornar-postagens/{userId}
+```
+
+Atualizar post
+```
+api/v1/posts/atualizar-postagem/{postId}
+```
+
+Deletar post
+```
+api/v1/posts/deletar-postagem/{postId}/?idUsuario={userId}
+```
+
+DTOs:
+
+Criar post:
+```
+{
+	//Obrigatorio, minimo de 5 caracteres, maximo de 100 caracteres, string
+	"titulo":string,
+	
+	//Obrigatorio, minimo de 1 caractere, maximo de 250, string
+	"conteudo":string,
+	
+	//Opcional, deve ser compativel com as tags disponiveis
+	"tag": string
+}
+```
+
+Atualizar post:
+```
+{
+	//Opcional, minimo de 5 caracteres, maximo de 100 caracteres, string
+	"titulo":string,
+	
+	//Opcional, minimo de 1 caractere, maximo de 250, string
+	"conteudo":string,
+	
+	//Opcional, deve ser compativel com as tags disponiveis
+	"tag": string
+}
+
+```
+
+---
+### Users
+
+Endpoint base de autenticacao: auth/
+
+Criar uma conta
+```
+api/v1/auth/criar-conta
+```
+
+Entrar no sistema
+```
+api/v1/auth/entrar
+```
+
+DTOs:
+
+Criar conta:
+```
+{
+	//opcional, string, min 5 caracteres, max 15
+	"username":string,
+	
+	//obrigatorio, email
+	"email":string,
+	
+	//obrigatorio, string, min 8 caracteres, max 25
+	"senha": string
+}
+```
+
+Entrar:
+```
+{
+	//obrigatorio, email
+	"email":string,
+	
+	//obrigatorio, string
+	"senha": string
+}
+```
+
+--- 
+## Frontend
+- React
+- Vite
+- Tailwind
+- Axios, router
+### Mapa do app
+
+- Iniciar com pagina de login / criar conta
+- Entrar no feed pessoal
+
+### Hooks
+- Hook de autenticacao
+- Hook para postagens
+
+---
+## Convencoes gerais
+
+Padrao de nomeacao: camelCase  
+Idioma: Portugues
+
+
+

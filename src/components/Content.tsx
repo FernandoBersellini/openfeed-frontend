@@ -1,24 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Post from "./Post";
 import PostFormModal from "./PostFormModal";
-import { posts as initialPosts } from "../utils/posts";
+import { useAuth } from "../hooks/useAuth";
+import { usePosts } from "../hooks/usePosts";
 
 function Content() {
-    const [postList, setPostList] = useState(initialPosts);
+    const { user } = useAuth();
+    const { posts, isLoading, error, createPost, deletePost } = usePosts(user?.id ?? 0);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    function handleAddPost(title: string, content: string) {
-        const newPost = {
-            id: postList.length > 0 ? Math.max(...postList.map(p => p.id)) + 1 : 1,
-            title,
-            content,
-        };
-        setPostList([newPost, ...postList]);
+    function handleAddPost(title: string, content: string, tag?: string) {
+        createPost({ title, content, tag });
     }
-
-    useEffect(() => {
-        console.log(postList);
-    }, [postList]);
 
     return (
         <main className="w-2/5 m-auto py-6">
@@ -31,8 +24,17 @@ function Content() {
                 </button>
             </div>
 
-            {postList.map((post) => (
-                <Post key={post.id} title={post.title} content={post.content} />
+            {isLoading && <p className="text-gray-500 mb-4">Carregando...</p>}
+            {error && <p className="text-red-500 mb-4">{error}</p>}
+
+            {posts.map((post) => (
+                <Post
+                    key={post.id}
+                    title={post.title}
+                    content={post.content}
+                    tag={post.tag}
+                    onDelete={() => deletePost(post.id)}
+                />
             ))}
 
             <PostFormModal

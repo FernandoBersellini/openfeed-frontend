@@ -1,23 +1,27 @@
 import { useState } from "react";
 
+const AVAILABLE_TAGS = ["VIDEOGAMES", "CINEMA", "ESPORTES", "LAZER", "COMIDA", "VIAGENS"];
+
 interface PostFormModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (title: string, content: string) => void;
+    onSubmit: (title: string, content: string, tag?: string) => void;
 }
 
 function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps) {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const [tag, setTag] = useState("");
 
     if (!isOpen) return null;
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         if (!title.trim() || !content.trim()) return;
-        onSubmit(title, content);
+        onSubmit(title, content, tag || undefined);
         setTitle("");
         setContent("");
+        setTag("");
         onClose();
     }
 
@@ -70,6 +74,23 @@ function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps) {
                             rows={4}
                             className="border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                        <label htmlFor="post-tag" className="text-sm font-semibold text-gray-600">
+                            Tag (opcional)
+                        </label>
+                        <select
+                            id="post-tag"
+                            value={tag}
+                            onChange={(e) => setTag(e.target.value)}
+                            className="border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        >
+                            <option value="">Nenhuma</option>
+                            {AVAILABLE_TAGS.map((t) => (
+                                <option key={t} value={t}>{t}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <div className="flex gap-3 justify-end mt-2">
