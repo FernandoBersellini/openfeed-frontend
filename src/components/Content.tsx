@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Post from "./Post";
 import PostFormModal from "./PostFormModal";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 import { usePosts } from "../hooks/usePosts";
+import PostButton from "./PostButton";
 
 function Content() {
     const { user } = useAuth();
@@ -16,16 +17,23 @@ function Content() {
     return (
         <main className="w-2/5 m-auto py-6">
             <div className="flex justify-end mb-4">
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-600 cursor-pointer transition-colors"
-                >
-                    + Novo Post
-                </button>
+                {posts.length > 0 && (
+                    <PostButton
+                        onClick={() => setIsModalOpen(true)}
+                    />
+                )}
             </div>
 
             {isLoading && <p className="text-gray-500 mb-4">Carregando...</p>}
             {error && <p className="text-red-500 mb-4">{error}</p>}
+            {!isLoading && !error && posts.length === 0 && (
+                <div className="flex flex-col items-center justify-center">
+                    <p className="text-gray-500 text-center mb-4">Nenhum post ainda, vamos mudar isso!</p>
+                    <PostButton
+                        onClick={() => setIsModalOpen(true)}
+                    />
+                </div>
+            )}
 
             {posts.map((post) => (
                 <Post

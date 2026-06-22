@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../utils/api";
 
 export interface Post {
@@ -53,17 +53,21 @@ export function usePosts(userId: number): UsePostsResult {
     const [posts, setPosts] = useState<Post[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const latestRequestId = useRef(0);
 
     const refetch = useCallback(async () => {
+        const requestId = ++latestRequestId.current;
         setIsLoading(true);
         setError(null);
         try {
             const response = await api.get<ApiPostDTO[]>(`/posts/retornar-postagens/${userId}`);
-            setPosts(response.data.map(mapToPost));
+            if (requestId !== latestRequestId.current) return;
+            setPosts((response.data ?? []).map(mapToPost));
         } catch {
+            if (requestId !== latestRequestId.current) return;
             setError("Não foi possível carregar os posts");
         } finally {
-            setIsLoading(false);
+            if (requestId === latestRequestId.current) setIsLoading(false);
         }
     }, [userId]);
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "../utils/api";
 
 export interface AuthUser {
@@ -7,7 +7,7 @@ export interface AuthUser {
     email: string;
 }
 
-interface UseAuthResult {
+export interface AuthState {
     user: AuthUser | null;
     isAuthenticated: boolean;
     isLoading: boolean;
@@ -19,15 +19,12 @@ interface UseAuthResult {
 
 const STORAGE_KEY = "authUser";
 
-// TODO: remover quando existir uma tela de login real
-const AUTO_LOGIN_CREDENTIALS = { email: "testehook@example.com", password: "senha1234" };
-
 function loadStoredUser(): AuthUser | null {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : null;
 }
 
-export function useAuth(): UseAuthResult {
+export function useAuthState(): AuthState {
     const [user, setUser] = useState<AuthUser | null>(loadStoredUser);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -61,14 +58,8 @@ export function useAuth(): UseAuthResult {
     function logout() {
         setUser(null);
         localStorage.removeItem(STORAGE_KEY);
+        window.location.href = "/auth";
     }
-
-    useEffect(() => {
-        if (!user) {
-            login(AUTO_LOGIN_CREDENTIALS.email, AUTO_LOGIN_CREDENTIALS.password);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     return {
         user,
