@@ -1,149 +1,165 @@
 # Openfeed
-- App  de posts simples
-# MVP
-Entrar com uma conta, e poder fazer postagens com tags especificas
+
+App de posts simples.
+
+## MVP
+
+Entrar com uma conta e poder fazer postagens com tags específicas.
+
 ## Backend
+
 - Spring
-- Postgres (Supabase pode ser uma boa)
-- Autenticacao de usuario: Lookup simples no banco de dados;
+- Postgres com Supabase
+- Autenticação de usuário: lookup simples no banco de dados
+
 ### Entidades
 
-Post  
-id_post: numerico (PK)  
-titulo: string  
-conteudo: string  
-data_postagem: date  
-tags: array de tags (pode ser um enum do banco de dados)  
-id_user: numero (FK)
+**Post**
 
-User  
-id_user: numerico (PK)  
-username: string  
-email: string  
-senha: string (criptografada no banco de dados)
+| Campo | Tipo |
+| --- | --- |
+| id_post | numérico (PK) |
+| titulo | string |
+| conteudo | string |
+| data_postagem | date |
+| tags | array de tags (pode ser um enum do banco de dados) |
+| id_user | numérico (FK) |
 
-Tags disponiveis:
-Videogames, Cinema, Esportes, Lazer, Comida, Viagens
+**User**
 
-### Endpoints 
-Convencao de nomeacao: kebab-case  
-Endpoint base global: api/v1
-### Posts
-Endpoint base: posts/
+| Campo | Tipo |
+| --- | --- |
+| id_user | numérico (PK) |
+| username | string |
+| email | string |
+| senha | string (criptografada no banco de dados) |
 
-Criar um post
+**Tags disponíveis:** Videogames, Cinema, Esportes, Lazer, Comida, Viagens
+
+### Endpoints
+
+Convenção de nomeação: kebab-case  
+Endpoint base global: `api/v1`
+
+#### Posts
+
+Endpoint base: `posts/`
+
+Criar um post:
 ```
 api/v1/posts/criar-postagem
 ```
 
-Retornar posts
+Retornar posts:
 ```
 api/v1/posts/retornar-postagens/{userId}
 ```
 
-Atualizar post
+Atualizar post:
 ```
 api/v1/posts/atualizar-postagem/{postId}
 ```
 
-Deletar post
+Deletar post:
 ```
 api/v1/posts/deletar-postagem/{postId}/?idUsuario={userId}
 ```
 
-DTOs:
+**DTOs**
 
 Criar post:
-```
+```jsonc
 {
-	//Obrigatorio, minimo de 5 caracteres, maximo de 100 caracteres, string
-	"titulo":string,
-	
-	//Obrigatorio, minimo de 1 caractere, maximo de 250, string
-	"conteudo":string,
-	
-	//Opcional, deve ser compativel com as tags disponiveis
+	// Obrigatório, mínimo de 5 caracteres, máximo de 100 caracteres, string
+	"titulo": string,
+
+	// Obrigatório, mínimo de 1 caractere, máximo de 250, string
+	"conteudo": string,
+
+	// Opcional, deve ser compatível com as tags disponíveis
 	"tag": string
 }
 ```
 
 Atualizar post:
-```
+```jsonc
 {
-	//Opcional, minimo de 5 caracteres, maximo de 100 caracteres, string
-	"titulo":string,
-	
-	//Opcional, minimo de 1 caractere, maximo de 250, string
-	"conteudo":string,
-	
-	//Opcional, deve ser compativel com as tags disponiveis
+	// Opcional, mínimo de 5 caracteres, máximo de 100 caracteres, string
+	"titulo": string,
+
+	// Opcional, mínimo de 1 caractere, máximo de 250, string
+	"conteudo": string,
+
+	// Opcional, deve ser compatível com as tags disponíveis
 	"tag": string
 }
-
 ```
 
 ---
-### Users
 
-Endpoint base de autenticacao: auth/
+#### Users
 
-Criar uma conta
+Endpoint base de autenticação: `auth/`
+
+Criar uma conta:
 ```
 api/v1/auth/criar-conta
 ```
 
-Entrar no sistema
+Entrar no sistema:
 ```
 api/v1/auth/entrar
 ```
 
-DTOs:
+**DTOs**
 
 Criar conta:
-```
+```jsonc
 {
-	//opcional, string, min 5 caracteres, max 15
-	"username":string,
-	
-	//obrigatorio, email
-	"email":string,
-	
-	//obrigatorio, string, min 8 caracteres, max 25
+	// Opcional, string, mín. 5 caracteres, máx. 15
+	"username": string,
+
+	// Obrigatório, email
+	"email": string,
+
+	// Obrigatório, string, mín. 8 caracteres, máx. 25
 	"senha": string
 }
 ```
 
 Entrar:
-```
+```jsonc
 {
-	//obrigatorio, email
-	"email":string,
-	
-	//obrigatorio, string
+	// Obrigatório, email
+	"email": string,
+
+	// Obrigatório, string
 	"senha": string
 }
 ```
 
---- 
+---
+
 ## Frontend
+
 - React
 - Vite
 - Tailwind
-- Axios, router
+- Axios
+
 ### Mapa do app
 
-- Iniciar com pagina de login / criar conta
+- Iniciar com página de login / criar conta
 - Entrar no feed pessoal
 
 ### Hooks
-- Hook de autenticacao
+
+- Hook de autenticação
 - Hook para postagens
 
 ---
-## Convencoes gerais
 
-Padrao de nomeacao: camelCase  
-Idioma: Portugues
+## Convenções gerais
 
-
-
+Padrão de nomeação: camelCase  
+Idioma: Português
