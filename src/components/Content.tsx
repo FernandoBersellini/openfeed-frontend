@@ -7,11 +7,11 @@ import PostButton from "./PostButton";
 
 function Content() {
     const { user } = useAuth();
-    const { posts, isLoading, error, createPost, deletePost } = usePosts(user?.id ?? 0);
+    const { posts, isLoading, isCreating, deletingId, error, createPost, deletePost } = usePosts(user?.id ?? 0);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    function handleAddPost(title: string, content: string, tag?: string) {
-        createPost({ title, content, tag });
+    async function handleAddPost(title: string, content: string, tag?: string) {
+        await createPost({ title, content, tag });
     }
 
     return (
@@ -41,12 +41,14 @@ function Content() {
                     title={post.title}
                     content={post.content}
                     tag={post.tag}
+                    isDeleting={deletingId === post.id}
                     onDelete={() => deletePost(post.id)}
                 />
             ))}
 
             <PostFormModal
                 isOpen={isModalOpen}
+                isSubmitting={isCreating}
                 onClose={() => setIsModalOpen(false)}
                 onSubmit={handleAddPost}
             />

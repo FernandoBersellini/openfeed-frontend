@@ -1,24 +1,26 @@
 import { useState } from "react";
+import Spinner from "./Spinner";
 
 const AVAILABLE_TAGS = ["VIDEOGAMES", "CINEMA", "ESPORTES", "LAZER", "COMIDA", "VIAGENS"];
 
 interface PostFormModalProps {
     isOpen: boolean;
+    isSubmitting?: boolean;
     onClose: () => void;
-    onSubmit: (title: string, content: string, tag?: string) => void;
+    onSubmit: (title: string, content: string, tag?: string) => Promise<void>;
 }
 
-function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps) {
+function PostFormModal({ isOpen, isSubmitting, onClose, onSubmit }: PostFormModalProps) {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [tag, setTag] = useState("");
 
     if (!isOpen) return null;
 
-    function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         if (!title.trim() || !content.trim()) return;
-        onSubmit(title, content, tag || undefined);
+        await onSubmit(title, content, tag || undefined);
         setTitle("");
         setContent("");
         setTag("");
@@ -97,15 +99,18 @@ function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps) {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer transition-colors"
+                            disabled={isSubmitting}
+                            className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
-                            className="px-5 py-2.5 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 cursor-pointer transition-colors"
+                            disabled={isSubmitting}
+                            className="px-5 py-2.5 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                         >
-                            Publicar
+                            {isSubmitting && <Spinner />}
+                            {isSubmitting ? "Publicando..." : "Publicar"}
                         </button>
                     </div>
                 </form>

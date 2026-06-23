@@ -32,6 +32,8 @@ interface ApiPostDTO {
 interface UsePostsResult {
     posts: Post[];
     isLoading: boolean;
+    isCreating: boolean;
+    deletingId: number | null;
     error: string | null;
     refetch: () => Promise<void>;
     createPost: (input: CreatePostInput) => Promise<void>;
@@ -52,6 +54,8 @@ function mapToPost(dto: ApiPostDTO): Post {
 export function usePosts(userId: number): UsePostsResult {
     const [posts, setPosts] = useState<Post[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
     const latestRequestId = useRef(0);
 
@@ -77,6 +81,7 @@ export function usePosts(userId: number): UsePostsResult {
 
     async function createPost(input: CreatePostInput) {
         setError(null);
+        setIsCreating(true);
         try {
             await api.post("/posts/criar-postagem", {
                 titulo: input.title,
@@ -87,6 +92,8 @@ export function usePosts(userId: number): UsePostsResult {
             await refetch();
         } catch {
             setError("Não foi possível criar o post");
+        } finally {
+            setIsCreating(false);
         }
     }
 
@@ -107,6 +114,7 @@ export function usePosts(userId: number): UsePostsResult {
 
     async function deletePost(id: number) {
         setError(null);
+        setDeletingId(id);
         try {
             await api.delete(`/posts/deletar-postagem/${id}`, {
                 params: { idUsuario: userId },
@@ -114,8 +122,10 @@ export function usePosts(userId: number): UsePostsResult {
             await refetch();
         } catch {
             setError("Não foi possível excluir o post");
+        } finally {
+            setDeletingId(null);
         }
     }
 
-    return { posts, isLoading, error, refetch, createPost, updatePost, deletePost };
+    return { posts, isLoading, isCreating, deletingId, error, refetch, createPost, updatePost, deletePost };
 }
