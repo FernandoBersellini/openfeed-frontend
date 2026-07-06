@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { api } from "../utils/api";
+import { AUTH_STORAGE_KEY } from "../utils/authStorage";
 
 export interface AuthUser {
     id: number;
     username: string;
     email: string;
+    token: string;
 }
 
 export interface AuthState {
@@ -17,10 +19,8 @@ export interface AuthState {
     logout: () => void;
 }
 
-const STORAGE_KEY = "authUser";
-
 function loadStoredUser(): AuthUser | null {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(AUTH_STORAGE_KEY);
     return stored ? JSON.parse(stored) : null;
 }
 
@@ -35,7 +35,7 @@ export function useAuthState(): AuthState {
         try {
             const response = await api.post<AuthUser>("/auth/entrar", { email, password });
             setUser(response.data);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(response.data));
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(response.data));
         } catch {
             setError("Email ou senha inválidos");
         } finally {
@@ -57,7 +57,7 @@ export function useAuthState(): AuthState {
 
     function logout() {
         setUser(null);
-        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(AUTH_STORAGE_KEY);
         window.location.href = "/auth";
     }
 

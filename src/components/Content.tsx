@@ -2,16 +2,27 @@ import { useState } from "react";
 import Post from "./Post";
 import PostFormModal from "./PostFormModal";
 import { useAuth } from "../context/AuthContext";
-import { usePosts } from "../hooks/usePosts";
+import { usePosts, type Post as PostData } from "../hooks/usePosts";
 import PostButton from "./PostButton";
 
 function Content() {
     const { user } = useAuth();
-    const { posts, isLoading, isCreating, deletingId, error, createPost, deletePost } = usePosts(user?.id ?? 0);
+    const { posts, isLoading, isCreating, deletingId, error, createPost, updatePost, deletePost } = usePosts(user?.id ?? 0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingPost, setEditingPost] = useState<PostData | null>(null);
 
     async function handleAddPost(title: string, content: string, tag?: string) {
         await createPost({ title, content, tag });
+    }
+
+    async function handleEditPost(title: string, content: string, tag?: string) {
+        if (!editingPost) return;
+        await updatePost(editingPost.id, { title, content, tag });
+    }
+
+    function closeModal() {
+        setIsModalOpen(false);
+        setEditingPost(null);
     }
 
     return (
@@ -38,19 +49,25 @@ function Content() {
             {posts.map((post) => (
                 <Post
                     key={post.id}
+                    id={post.id}
                     title={post.title}
                     content={post.content}
                     tag={post.tag}
+                    createdAt={post.createdAt}
                     isDeleting={deletingId === post.id}
                     onDelete={() => deletePost(post.id)}
+                    onEdit={() => setEditingPost(post)}
                 />
             ))}
 
             <PostFormModal
-                isOpen={isModalOpen}
+                isOpen={isModalOpen || editingPost !== null}
                 isSubmitting={isCreating}
-                onClose={() => setIsModalOpen(false)}
-                onSubmit={handleAddPost}
+                initialTitle={editingPost?.title}
+                initialContent={editingPost?.content}
+                initialTag={editingPost?.tag}
+                onClose={closeModal}
+                onSubmit={editingPost ? handleEditPost : handleAddPost}
             />
         </main>
     )
