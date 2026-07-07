@@ -16,7 +16,7 @@ export interface AuthState {
     error: string | null;
     login: (email: string, password: string) => Promise<void>;
     signUp: (email: string, password: string, username?: string) => Promise<void>;
-    logout: () => void;
+    logout: () => Promise<void>;
 }
 
 function loadStoredUser(): AuthUser | null {
@@ -55,7 +55,12 @@ export function useAuthState(): AuthState {
         }
     }
 
-    function logout() {
+    async function logout() {
+        try {
+            await api.post("/auth/sair");
+        } catch {
+            // ignora falha na revogação do token; o logout local prossegue de qualquer forma
+        }
         setUser(null);
         localStorage.removeItem(AUTH_STORAGE_KEY);
         window.location.href = "/auth";

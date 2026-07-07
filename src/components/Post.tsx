@@ -7,9 +7,12 @@ interface PostProps {
     content: string;
     tag?: string | null;
     createdAt: string;
+    totalLikes: number;
+    likedByCurrentUser: boolean;
     isDeleting?: boolean;
     onDelete: () => void;
     onEdit: () => void;
+    onToggleLike: () => void;
 }
 
 function formatDate(dateString: string): string {
@@ -27,6 +30,17 @@ function Post(props: PostProps) {
             <h2 className="text-xl font-bold mb-2">{props.title}</h2>
             <p className="text-gray-700 mb-2">{props.content}</p>
             <div className="flex gap-2">
+                <button
+                    onClick={props.onToggleLike}
+                    aria-pressed={props.likedByCurrentUser}
+                    className={`px-4 py-2 rounded cursor-pointer transition-colors flex items-center gap-2 border ${
+                        props.likedByCurrentUser
+                            ? "bg-pink-500 text-white border-pink-500 hover:bg-pink-600"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                    }`}
+                >
+                    {props.likedByCurrentUser ? "♥" : "♡"} {props.totalLikes}
+                </button>
                 <button
                     onClick={props.onEdit}
                     className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600 transition-colors"

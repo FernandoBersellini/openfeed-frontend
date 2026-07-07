@@ -7,7 +7,7 @@ import PostButton from "./PostButton";
 
 function Content() {
     const { user } = useAuth();
-    const { posts, isLoading, isCreating, deletingId, error, createPost, updatePost, deletePost } = usePosts(user?.id ?? 0);
+    const { posts, isLoading, isCreating, deletingId, error, createPost, updatePost, deletePost, toggleLike } = usePosts(user?.id ?? 0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingPost, setEditingPost] = useState<PostData | null>(null);
 
@@ -54,9 +54,12 @@ function Content() {
                     content={post.content}
                     tag={post.tag}
                     createdAt={post.createdAt}
+                    totalLikes={post.totalLikes}
+                    likedByCurrentUser={post.likedByCurrentUser}
                     isDeleting={deletingId === post.id}
                     onDelete={() => deletePost(post.id)}
                     onEdit={() => setEditingPost(post)}
+                    onToggleLike={() => toggleLike(post.id)}
                 />
             ))}
 

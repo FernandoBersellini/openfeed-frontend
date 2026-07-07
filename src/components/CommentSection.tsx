@@ -18,6 +18,7 @@ function CommentSection({ postId }: CommentSectionProps) {
         createComment,
         updateComment,
         deleteComment,
+        toggleLike,
     } = useComments(postId);
     const [content, setContent] = useState("");
 
@@ -47,6 +48,7 @@ function CommentSection({ postId }: CommentSectionProps) {
                         isDeleting={deletingId === comment.id}
                         onUpdate={(newContent) => updateComment(comment.id, newContent)}
                         onDelete={() => deleteComment(comment.id)}
+                        onToggleLike={() => toggleLike(comment.id)}
                     />
                 ))}
             </div>

@@ -1,7 +1,7 @@
-import { useAuthState } from "../hooks/useAuth"
+import { useAuth } from "../context/AuthContext"
 
 function Header() {
-    const { logout } = useAuthState()
+    const { logout } = useAuth()
     return (
         <header className="w-2/5 m-auto mt-5 mb-8 flex justify-between items-center">
             <h1 className="text-2xl font-bold">OpenFeed</h1>

@@ -1,250 +1,57 @@
-# Openfeed
+# Openfeed — Frontend
 
-App de posts simples.
+Cliente web do Openfeed, um app de posts simples com tags, comentários e curtidas.
 
-## MVP
+Este repositório contém apenas o frontend. Para a documentação da API (entidades, endpoints, DTOs, autenticação, rate limiting etc.), veja o README do backend.
 
-Entrar com uma conta e poder fazer postagens com tags específicas.
+## Stack
 
-## Features
-- Postagens
-- Comentarios
-- Autenticação JWT
-
-## Backend
-
-- Spring
-- Postgres com Supabase
-- Autenticação de usuário: JWT (Bearer Token)
-
-### Entidades
-
-**Post**
-
-| Campo | Tipo                                               |
-| --- |----------------------------------------------------|
-| id_post | numérico (PK)                                      |
-| titulo | string                                             |
-| conteudo | string                                             |
-| data_postagem | date (server-set)                                  |
-| tags | array de tags (pode ser um enum do banco de dados) |
-| id_user | numérico (FK)                                      |
-
-**User**
-
-| Campo | Tipo |
-| --- | --- |
-| id_user | numérico (PK) |
-| username | string |
-| email | string |
-| senha | string (criptografada no banco de dados) |
-
-**Tags disponíveis:** Videogames, Cinema, Esportes, Lazer, Comida, Viagens
-
-**Comentario**
-
-| Campo | Tipo |
-| --- | --- |
-| id_comentario | numérico (PK) |
-| conteudo | string |
-| data_comentario | date (server-set) |
-| id_user | numérico (FK) |
-| id_post | numérico (FK) |
-
-### Endpoints
-
-Convenção de nomeação: kebab-case  
-Endpoint base global: `api/v1`
-
-#### Posts
-
-Endpoint base: `posts/`
-
-Criar um post:
-```
-api/v1/posts/criar-postagem
-```
-
-Retornar posts:
-```
-api/v1/posts/retornar-postagens/{userId}
-```
-
-Atualizar post:
-```
-api/v1/posts/atualizar-postagem/{postId}
-```
-
-Deletar post:
-```
-api/v1/posts/deletar-postagem/{postId}
-```
-
-**DTOs**
-
-Criar post:
-```jsonc
-{
-	// Obrigatório, mínimo de 5 caracteres, máximo de 100 caracteres, string
-	"titulo": string,
-
-	// Obrigatório, mínimo de 1 caractere, máximo de 250, string
-	"conteudo": string,
-
-	// Opcional, deve ser compatível com as tags disponíveis
-	"tag": string
-}
-```
-
-Atualizar post:
-```jsonc
-{
-	// Opcional, mínimo de 5 caracteres, máximo de 100 caracteres, string
-	"titulo": string,
-
-	// Opcional, mínimo de 1 caractere, máximo de 250, string
-	"conteudo": string,
-
-	// Opcional, deve ser compatível com as tags disponíveis
-	"tag": string
-}
-```
-
----
-
-#### Comentarios
-
-Endpoint base: `comentarios/`
-
-Fazer um comentario:
-```
-api/v1/comentarios/criar-comentario/{postId}
-```
-
-Retornar comentarios:
-```
-api/v1/comentarios/retornar-comentarios/{postId}
-```
-
-Editar um comentario:
-```
-api/v1/comentarios/editar-comentario/{commentId}
-```
-
-Deletar um comentario:
-```
-api/v1/comentarios/deletar-comentario/{commentId}
-```
-
-**DTOs**
-
-Fazer um comentario:
-```jsonc
-{
-	// Obrigatório, mínimo de 1 caractere, máximo de 250, string
-	"conteudo": string
-}
-```
-
-Editar um comentario:
-```jsonc
-{
-	// Opcional, mínimo de 1 caractere, máximo de 250, string
-	"conteudo": string
-}
-```
-
----
-
-#### Users
-
-Endpoint base de autenticação: `auth/`
-
-Criar uma conta:
-```
-api/v1/auth/criar-conta
-```
-
-Entrar no sistema:
-```
-api/v1/auth/entrar
-```
-
-**DTOs**
-
-Criar conta:
-```jsonc
-{
-	// Opcional, string, mín. 5 caracteres, máx. 15
-	"username": string,
-
-	// Obrigatório, email
-	"email": string,
-
-	// Obrigatório, string, mín. 8 caracteres, máx. 25
-	"password": string
-}
-```
-
-Entrar:
-```jsonc
-{
-	// Obrigatório, email
-	"email": string,
-
-	// Obrigatório, string
-	"password": string
-}
-```
-
-Resposta (ambos os endpoints):
-```jsonc
-{
-	"token": string,
-	"id": number,
-	"email": string,
-	"username": string
-}
-```
-
----
-
-### Autenticação
-
-Os endpoints de criação, edição e deleção de posts e comentários exigem um token JWT válido no header:
-
-```
-Authorization: Bearer <token>
-```
-
-Endpoints públicos (sem token necessário):
-- `POST api/v1/auth/entrar`
-- `POST api/v1/auth/criar-conta`
-- `GET api/v1/posts/retornar-postagens/{userId}`
-- `GET api/v1/comentarios/retornar-comentarios/{postId}`
-
----
-
-## Frontend
-
-- React
+- React 19 + TypeScript
 - Vite
-- Tailwind
+- Tailwind CSS
 - Axios
+- React Router
 
-### Mapa do app
+## Rodando o projeto
 
-- Iniciar com página de login / criar conta
-- Entrar no feed pessoal
+```bash
+npm install
+npm run dev
+```
 
-### Hooks
+A aplicação espera a API rodando em `http://localhost:8080/api/v1` (ver `src/utils/api.ts`).
 
-- Hook de autenticação
-- Hook para postagens
+Outros scripts:
 
----
+```bash
+npm run build    # typecheck + build de produção
+npm run lint     # eslint
+npm run preview  # preview do build de produção
+```
 
-## Convenções gerais
+## Estrutura
 
-Padrão de nomeação: camelCase  
+```
+src/
+├── components/   # componentes de UI (Post, CommentSection, Auth, forms, etc.)
+├── context/      # AuthContext — estado de autenticação compartilhado
+├── hooks/        # useAuth, usePosts, useComments — lógica de dados e chamadas à API
+├── utils/        # cliente axios (api.ts) e storage de autenticação
+```
+
+## Autenticação
+
+O token JWT retornado pelo backend é persistido em `localStorage` (`src/utils/authStorage.ts`) e injetado automaticamente em cada requisição via interceptor do Axios (`src/utils/api.ts`). O logout invalida o token no backend (`POST auth/sair`) além de limpar o estado local.
+
+## Features implementadas
+
+- Cadastro e login
+- Logout com revogação de token
+- Criar, editar e excluir posts (com tags)
+- Comentar, editar e excluir comentários
+- Curtir/descurtir posts e comentários
+
+## Convenções
+
+Padrão de nomeação: camelCase
 Idioma: Português

@@ -7,6 +7,8 @@ export interface Post {
     content: string;
     tag?: string | null;
     createdAt: string;
+    totalLikes: number;
+    likedByCurrentUser: boolean;
 }
 
 export interface CreatePostInput {
@@ -27,6 +29,13 @@ interface ApiPostDTO {
     conteudo: string;
     tag: string | null;
     dataPostagem: string;
+    totalLikes: number;
+    usuarioAtualCurtiu: boolean;
+}
+
+interface ApiLikeDTO {
+    totalLikes: number;
+    usuarioAtualCurtiu: boolean;
 }
 
 interface UsePostsResult {
@@ -39,6 +48,7 @@ interface UsePostsResult {
     createPost: (input: CreatePostInput) => Promise<void>;
     updatePost: (id: number, input: UpdatePostInput) => Promise<void>;
     deletePost: (id: number) => Promise<void>;
+    toggleLike: (id: number) => Promise<void>;
 }
 
 function mapToPost(dto: ApiPostDTO): Post {
@@ -48,6 +58,8 @@ function mapToPost(dto: ApiPostDTO): Post {
         content: dto.conteudo,
         tag: dto.tag,
         createdAt: dto.dataPostagem,
+        totalLikes: dto.totalLikes,
+        likedByCurrentUser: dto.usuarioAtualCurtiu,
     };
 }
 
@@ -127,5 +139,33 @@ export function usePosts(userId: number): UsePostsResult {
         }
     }
 
-    return { posts, isLoading, isCreating, deletingId, error, refetch, createPost, updatePost, deletePost };
+    async function toggleLike(id: number) {
+        const previousPosts = posts;
+        setPosts((current) =>
+            current.map((post) =>
+                post.id === id
+                    ? {
+                          ...post,
+                          likedByCurrentUser: !post.likedByCurrentUser,
+                          totalLikes: post.totalLikes + (post.likedByCurrentUser ? -1 : 1),
+                      }
+                    : post
+            )
+        );
+        try {
+            const response = await api.post<ApiLikeDTO>(`/posts/interagir-com-postagem/${id}`);
+            setPosts((current) =>
+                current.map((post) =>
+                    post.id === id
+                        ? { ...post, totalLikes: response.data.totalLikes, likedByCurrentUser: response.data.usuarioAtualCurtiu }
+                        : post
+                )
+            );
+        } catch {
+            setPosts(previousPosts);
+            setError("Não foi possível curtir o post");
+        }
+    }
+
+    return { posts, isLoading, isCreating, deletingId, error, refetch, createPost, updatePost, deletePost, toggleLike };
 }

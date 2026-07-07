@@ -8,6 +8,7 @@ interface CommentItemProps {
     isDeleting?: boolean;
     onUpdate: (content: string) => Promise<void>;
     onDelete: () => void;
+    onToggleLike: () => void;
 }
 
 function formatDate(dateString: string): string {
@@ -15,7 +16,7 @@ function formatDate(dateString: string): string {
     return date.toLocaleDateString("pt-BR", { timeZone: "UTC" });
 }
 
-function CommentItem({ comment, isEditing, isDeleting, onUpdate, onDelete }: CommentItemProps) {
+function CommentItem({ comment, isEditing, isDeleting, onUpdate, onDelete, onToggleLike }: CommentItemProps) {
     const [isEditingForm, setIsEditingForm] = useState(false);
     const [content, setContent] = useState(comment.content);
 
@@ -67,7 +68,16 @@ function CommentItem({ comment, isEditing, isDeleting, onUpdate, onDelete }: Com
                 <span className="text-xs text-gray-400">{formatDate(comment.createdAt)}</span>
             </div>
             <p className="text-sm text-gray-700 mb-2">{comment.content}</p>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+                <button
+                    onClick={onToggleLike}
+                    aria-pressed={comment.likedByCurrentUser}
+                    className={`text-xs cursor-pointer transition-colors ${
+                        comment.likedByCurrentUser ? "text-pink-500 hover:text-pink-600" : "text-gray-500 hover:text-gray-700"
+                    }`}
+                >
+                    {comment.likedByCurrentUser ? "♥" : "♡"} {comment.totalLikes}
+                </button>
                 <button
                     onClick={() => setIsEditingForm(true)}
                     className="text-xs text-blue-500 hover:text-blue-600 cursor-pointer transition-colors"

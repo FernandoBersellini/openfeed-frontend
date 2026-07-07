@@ -6,13 +6,24 @@ export interface Comment {
     content: string;
     createdAt: string;
     userId: number;
+    username: string;
+    totalLikes: number;
+    likedByCurrentUser: boolean;
 }
 
 interface ApiCommentDTO {
     idComentario: number;
     conteudo: string;
     dataComentario: string;
-    idUser: number;
+    idUsuario: number;
+    username: string;
+    totalLikes: number;
+    usuarioAtualCurtiu: boolean;
+}
+
+interface ApiLikeDTO {
+    totalLikes: number;
+    usuarioAtualCurtiu: boolean;
 }
 
 interface UseCommentsResult {
@@ -26,6 +37,7 @@ interface UseCommentsResult {
     createComment: (content: string) => Promise<void>;
     updateComment: (id: number, content: string) => Promise<void>;
     deleteComment: (id: number) => Promise<void>;
+    toggleLike: (id: number) => Promise<void>;
 }
 
 function mapToComment(dto: ApiCommentDTO): Comment {
@@ -33,7 +45,10 @@ function mapToComment(dto: ApiCommentDTO): Comment {
         id: dto.idComentario,
         content: dto.conteudo,
         createdAt: dto.dataComentario,
-        userId: dto.idUser,
+        userId: dto.idUsuario,
+        username: dto.username,
+        totalLikes: dto.totalLikes,
+        likedByCurrentUser: dto.usuarioAtualCurtiu,
     };
 }
 
@@ -105,6 +120,34 @@ export function useComments(postId: number): UseCommentsResult {
         }
     }
 
+    async function toggleLike(id: number) {
+        const previousComments = comments;
+        setComments((current) =>
+            current.map((comment) =>
+                comment.id === id
+                    ? {
+                          ...comment,
+                          likedByCurrentUser: !comment.likedByCurrentUser,
+                          totalLikes: comment.totalLikes + (comment.likedByCurrentUser ? -1 : 1),
+                      }
+                    : comment
+            )
+        );
+        try {
+            const response = await api.post<ApiLikeDTO>(`/comentarios/interagir-com-comentario/${id}`);
+            setComments((current) =>
+                current.map((comment) =>
+                    comment.id === id
+                        ? { ...comment, totalLikes: response.data.totalLikes, likedByCurrentUser: response.data.usuarioAtualCurtiu }
+                        : comment
+                )
+            );
+        } catch {
+            setComments(previousComments);
+            setError("Não foi possível curtir o comentário");
+        }
+    }
+
     return {
         comments,
         isLoading,
@@ -116,5 +159,6 @@ export function useComments(postId: number): UseCommentsResult {
         createComment,
         updateComment,
         deleteComment,
+        toggleLike,
     };
 }
