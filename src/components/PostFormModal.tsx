@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Spinner from "./Spinner";
 
 const AVAILABLE_TAGS = ["VIDEOGAMES", "CINEMA", "ESPORTES", "LAZER", "COMIDA", "VIAGENS"];
@@ -26,14 +26,6 @@ function PostFormModal({
     const [title, setTitle] = useState(initialTitle);
     const [content, setContent] = useState(initialContent);
     const [tag, setTag] = useState(initialTag ?? "");
-
-    useEffect(() => {
-        if (isOpen) {
-            setTitle(initialTitle);
-            setContent(initialContent);
-            setTag(initialTag ?? "");
-        }
-    }, [isOpen, initialTitle, initialContent, initialTag]);
 
     if (!isOpen) return null;
 

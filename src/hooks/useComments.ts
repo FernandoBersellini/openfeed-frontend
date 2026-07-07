@@ -78,6 +78,7 @@ export function useComments(postId: number): UseCommentsResult {
     }, [postId]);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch on mount, not a render-triggered cascade
         refetch();
     }, [refetch]);
 

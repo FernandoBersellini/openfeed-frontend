@@ -3,7 +3,8 @@ import Auth from './components/Auth'
 import Content from './components/Content'
 import Footer from './components/Footer'
 import Header from './components/Header'
-import { AuthProvider, useAuth } from './context/AuthContext'
+import { AuthProvider } from './context/AuthContext'
+import { useAuth } from './context/useAuth'
 
 function AppContent() {
   const { isAuthenticated } = useAuth()

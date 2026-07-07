@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Post from "./Post";
 import PostFormModal from "./PostFormModal";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import { usePosts, type Post as PostData } from "../hooks/usePosts";
 import PostButton from "./PostButton";
 
@@ -64,6 +64,7 @@ function Content() {
             ))}
 
             <PostFormModal
+                key={editingPost?.id ?? "new"}
                 isOpen={isModalOpen || editingPost !== null}
                 isSubmitting={isCreating}
                 initialTitle={editingPost?.title}

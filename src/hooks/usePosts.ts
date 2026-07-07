@@ -88,6 +88,7 @@ export function usePosts(userId: number): UsePostsResult {
     }, [userId]);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch on mount, not a render-triggered cascade
         refetch();
     }, [refetch]);
 
