@@ -35,11 +35,11 @@ function Content() {
                 )}
             </div>
 
-            {isLoading && <p className="text-gray-500 mb-4">Carregando...</p>}
-            {error && <p className="text-red-500 mb-4">{error}</p>}
+            {isLoading && <p className="text-gray-500 dark:text-gray-400 mb-4">Carregando...</p>}
+            {error && <p className="text-red-500 dark:text-red-400 mb-4">{error}</p>}
             {!isLoading && !error && posts.length === 0 && (
                 <div className="flex flex-col items-center justify-center">
-                    <p className="text-gray-500 text-center mb-4">Nenhum post ainda, vamos mudar isso!</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-center mb-4">Nenhum post ainda, vamos mudar isso!</p>
                     <PostButton
                         onClick={() => setIsModalOpen(true)}
                     />

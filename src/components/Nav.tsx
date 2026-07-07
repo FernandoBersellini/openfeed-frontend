@@ -1,7 +1,7 @@
 function Nav() {
     return (
         <nav>
-            <ul className="flex gap-3">
+            <ul className="flex gap-3 text-gray-900 dark:text-white">
                 <li className="font-bold">
                     <a href="#home" className="hover:underline">Home</a>
                 </li>

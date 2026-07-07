@@ -22,13 +22,13 @@ function formatDate(dateString: string): string {
 
 function Post(props: PostProps) {
     return (
-        <section className="border border-gray-300 rounded-lg p-4 mb-4">
+        <section className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-4 mb-4">
             <div className="flex justify-between items-start">
-                <span className="text-xs font-semibold uppercase text-gray-400">{props.tag}</span>
-                <span className="text-xs text-gray-400">{formatDate(props.createdAt)}</span>
+                <span className="text-xs font-semibold uppercase text-gray-400 dark:text-gray-500">{props.tag}</span>
+                <span className="text-xs text-gray-400 dark:text-gray-500">{formatDate(props.createdAt)}</span>
             </div>
-            <h2 className="text-xl font-bold mb-2">{props.title}</h2>
-            <p className="text-gray-700 mb-2">{props.content}</p>
+            <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{props.title}</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-2">{props.content}</p>
             <div className="flex gap-2">
                 <button
                     onClick={props.onToggleLike}
@@ -36,7 +36,7 @@ function Post(props: PostProps) {
                     className={`px-4 py-2 rounded cursor-pointer transition-colors flex items-center gap-2 border ${
                         props.likedByCurrentUser
                             ? "bg-pink-500 text-white border-pink-500 hover:bg-pink-600"
-                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                            : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
                     }`}
                 >
                     {props.likedByCurrentUser ? "♥" : "♡"} {props.totalLikes}

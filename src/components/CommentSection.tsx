@@ -30,13 +30,13 @@ function CommentSection({ postId }: CommentSectionProps) {
     }
 
     return (
-        <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col gap-3">
-            <h3 className="text-sm font-semibold text-gray-600">Comentários</h3>
+        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex flex-col gap-3">
+            <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300">Comentários</h3>
 
-            {isLoading && <p className="text-sm text-gray-500">Carregando comentários...</p>}
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {isLoading && <p className="text-sm text-gray-500 dark:text-gray-400">Carregando comentários...</p>}
+            {error && <p className="text-sm text-red-500 dark:text-red-400">{error}</p>}
             {!isLoading && comments.length === 0 && (
-                <p className="text-sm text-gray-400">Nenhum comentário ainda.</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500">Nenhum comentário ainda.</p>
             )}
 
             <div className="flex flex-col gap-2">
@@ -59,7 +59,7 @@ function CommentSection({ postId }: CommentSectionProps) {
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Escreva um comentário..."
                     rows={2}
-                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-800 dark:text-gray-100 dark:bg-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
                 <button
                     type="submit"

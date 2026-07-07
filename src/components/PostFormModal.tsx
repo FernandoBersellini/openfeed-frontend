@@ -50,12 +50,12 @@ function PostFormModal({
             onClick={handleOverlayClick}
             className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
         >
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 mx-4 animate-[fadeIn_0.2s_ease-out]">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md p-6 mx-4 animate-[fadeIn_0.2s_ease-out]">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800">{isEditing ? "Editar Post" : "Novo Post"}</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{isEditing ? "Editar Post" : "Novo Post"}</h2>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 text-2xl leading-none cursor-pointer transition-colors"
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl leading-none cursor-pointer transition-colors"
                     >
                         ✕
                     </button>
@@ -63,7 +63,7 @@ function PostFormModal({
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="post-title" className="text-sm font-semibold text-gray-600">
+                        <label htmlFor="post-title" className="text-sm font-semibold text-gray-600 dark:text-gray-300">
                             Título
                         </label>
                         <input
@@ -72,12 +72,12 @@ function PostFormModal({
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="Digite o título do post"
-                            className="border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-900 rounded-lg px-4 py-2.5 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         />
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="post-content" className="text-sm font-semibold text-gray-600">
+                        <label htmlFor="post-content" className="text-sm font-semibold text-gray-600 dark:text-gray-300">
                             Conteúdo
                         </label>
                         <textarea
@@ -86,19 +86,19 @@ function PostFormModal({
                             onChange={(e) => setContent(e.target.value)}
                             placeholder="Digite o conteúdo do post"
                             rows={4}
-                            className="border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-900 rounded-lg px-4 py-2.5 text-gray-800 dark:text-gray-100 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         />
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="post-tag" className="text-sm font-semibold text-gray-600">
+                        <label htmlFor="post-tag" className="text-sm font-semibold text-gray-600 dark:text-gray-300">
                             Tag (opcional)
                         </label>
                         <select
                             id="post-tag"
                             value={tag}
                             onChange={(e) => setTag(e.target.value)}
-                            className="border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-900 rounded-lg px-4 py-2.5 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         >
                             <option value="">Nenhuma</option>
                             {AVAILABLE_TAGS.map((t) => (
@@ -112,14 +112,14 @@ function PostFormModal({
                             type="button"
                             onClick={onClose}
                             disabled={isSubmitting}
-                            className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="px-5 py-2.5 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            className="px-5 py-2.5 rounded-lg bg-blue-500 dark:bg-blue-600 text-white font-semibold hover:bg-blue-600 dark:hover:bg-blue-700 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                         >
                             {isSubmitting && <Spinner />}
                             {isSubmitting
