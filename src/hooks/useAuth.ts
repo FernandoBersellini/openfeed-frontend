@@ -1,12 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../utils/api";
-import { AUTH_STORAGE_KEY } from "../utils/authStorage";
 
 export interface AuthUser {
     id: number;
     username: string;
     email: string;
-    token: string;
 }
 
 export interface AuthState {
@@ -19,15 +17,17 @@ export interface AuthState {
     logout: () => Promise<void>;
 }
 
-function loadStoredUser(): AuthUser | null {
-    const stored = localStorage.getItem(AUTH_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : null;
-}
-
 export function useAuthState(): AuthState {
-    const [user, setUser] = useState<AuthUser | null>(loadStoredUser);
-    const [isLoading, setIsLoading] = useState(false);
+    const [user, setUser] = useState<AuthUser | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        api.get<AuthUser>("/auth/me")
+            .then((response) => setUser(response.data))
+            .catch(() => setUser(null))
+            .finally(() => setIsLoading(false));
+    }, []);
 
     async function login(email: string, password: string) {
         setIsLoading(true);
@@ -35,7 +35,6 @@ export function useAuthState(): AuthState {
         try {
             const response = await api.post<AuthUser>("/auth/entrar", { email, password });
             setUser(response.data);
-            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(response.data));
         } catch {
             setError("Email ou senha inválidos");
         } finally {
@@ -59,10 +58,9 @@ export function useAuthState(): AuthState {
         try {
             await api.post("/auth/sair");
         } catch {
-            // ignora falha na revogação do token; o logout local prossegue de qualquer forma
+            // ignora falha na revogação da sessão; o logout local prossegue de qualquer forma
         }
         setUser(null);
-        localStorage.removeItem(AUTH_STORAGE_KEY);
         window.location.href = "/auth";
     }
 

@@ -100,7 +100,6 @@ export function usePosts(userId: number): UsePostsResult {
                 titulo: input.title,
                 conteudo: input.content,
                 tag: input.tag,
-                idUsuario: userId,
             });
             await refetch();
         } catch {
@@ -117,7 +116,6 @@ export function usePosts(userId: number): UsePostsResult {
                 titulo: input.title,
                 conteudo: input.content,
                 tag: input.tag,
-                idUsuario: userId,
             });
             await refetch();
         } catch {
@@ -129,9 +127,7 @@ export function usePosts(userId: number): UsePostsResult {
         setError(null);
         setDeletingId(id);
         try {
-            await api.delete(`/posts/deletar-postagem/${id}`, {
-                params: { idUsuario: userId },
-            });
+            await api.delete(`/posts/deletar-postagem/${id}`);
             await refetch();
         } catch {
             setError("Não foi possível excluir o post");
