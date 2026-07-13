@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { api } from "../utils/api";
+import { api, setXsrfToken } from "../utils/api";
 
 export interface AuthUser {
     id: number;
     username: string;
     email: string;
+    csrfToken?: string;
 }
 
 export interface AuthState {
@@ -24,7 +25,10 @@ export function useAuthState(): AuthState {
 
     useEffect(() => {
         api.get<AuthUser>("/auth/me")
-            .then((response) => setUser(response.data))
+            .then((response) => {
+                setXsrfToken(response.data.csrfToken ?? null);
+                setUser(response.data);
+            })
             .catch(() => setUser(null))
             .finally(() => setIsLoading(false));
     }, []);
@@ -34,6 +38,7 @@ export function useAuthState(): AuthState {
         setError(null);
         try {
             const response = await api.post<AuthUser>("/auth/entrar", { email, password });
+            setXsrfToken(response.data.csrfToken ?? null);
             setUser(response.data);
         } catch {
             setError("Email ou senha inválidos");
@@ -60,6 +65,7 @@ export function useAuthState(): AuthState {
         } catch {
             // ignora falha na revogação da sessão; o logout local prossegue de qualquer forma
         }
+        setXsrfToken(null);
         setUser(null);
     }
 

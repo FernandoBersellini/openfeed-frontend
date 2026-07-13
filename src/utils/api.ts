@@ -9,13 +9,17 @@ export const api = axios.create({
     withCredentials: true,
 });
 
-function readCookie(name: string): string | null {
-    const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-    return match ? decodeURIComponent(match[1]) : null;
+// The XSRF-TOKEN cookie is set by a different origin (the API), so frontend JS
+// can never read it via document.cookie. The backend also returns the token
+// in the /auth/entrar and /auth/me response bodies; we hold it here in memory
+// (never persisted) and echo it back as a header on every request.
+let xsrfToken: string | null = null;
+
+export function setXsrfToken(token: string | null) {
+    xsrfToken = token;
 }
 
 api.interceptors.request.use((config) => {
-    const xsrfToken = readCookie("XSRF-TOKEN");
     if (xsrfToken) {
         config.headers["X-XSRF-TOKEN"] = xsrfToken;
     }
