@@ -1,8 +1,13 @@
 # Openfeed — Frontend
+![CI](https://github.com/FernandoBersellini/open-feed/actions/workflows/ci.yml/badge.svg)
 
 Cliente web do Openfeed, um app de posts simples com tags, comentários e curtidas.
 
 Este repositório contém apenas o frontend. Para a documentação da API (entidades, endpoints, DTOs, autenticação, rate limiting etc.), veja o README do backend.
+
+Acesse em:
+- Frontend: https://openfeed-frontend.vercel.app/
+- API (backend): https://open-feed.fly.dev/api/v1/actuator/health
 
 ## Stack
 
