@@ -7,7 +7,17 @@ const baseURL = import.meta.env.PROD
 export const api = axios.create({
     baseURL: `${baseURL}/api/v1`,
     withCredentials: true,
-    withXSRFToken: true,
-    xsrfCookieName: "XSRF-TOKEN",
-    xsrfHeaderName: "X-XSRF-TOKEN",
+});
+
+function readCookie(name: string): string | null {
+    const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+    return match ? decodeURIComponent(match[1]) : null;
+}
+
+api.interceptors.request.use((config) => {
+    const xsrfToken = readCookie("XSRF-TOKEN");
+    if (xsrfToken) {
+        config.headers["X-XSRF-TOKEN"] = xsrfToken;
+    }
+    return config;
 });

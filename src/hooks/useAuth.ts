@@ -61,7 +61,6 @@ export function useAuthState(): AuthState {
             // ignora falha na revogação da sessão; o logout local prossegue de qualquer forma
         }
         setUser(null);
-        window.location.href = "/auth";
     }
 
     return {
