@@ -26,8 +26,8 @@ function Content() {
     }
 
     return (
-        <main className="w-2/5 m-auto py-6">
-            <div className="flex justify-end mb-4">
+        <main className="w-4/5 lg:w-2/5 m-auto py-6">
+            <div className="flex justify-center md:justify-end mb-4">
                 {posts.length > 0 && (
                     <PostButton
                         onClick={() => setIsModalOpen(true)}
@@ -36,9 +36,9 @@ function Content() {
             </div>
 
             {isLoading && <p className="text-gray-500 dark:text-gray-400 mb-4">Carregando...</p>}
-            {error && <p className="text-red-500 dark:text-red-400 mb-4">{error}</p>}
-            {!isLoading && !error && posts.length === 0 && (
+            {!isLoading && posts.length === 0 && (
                 <div className="flex flex-col items-center justify-center">
+                    {error && <p className="text-red-500 dark:text-red-400 mb-4">{error}</p>}
                     <p className="text-gray-500 dark:text-gray-400 text-center mb-4">Nenhum post ainda, vamos mudar isso!</p>
                     <PostButton
                         onClick={() => setIsModalOpen(true)}
